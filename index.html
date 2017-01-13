@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Afficher le menu</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">HERBARIUM</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#" title="Sauvergarder la carte" onclick="sidebarSwitch()"><span id="sidebarswitch" class="glyphicon glyphicon-menu-right"></span></a></li>
+                    <li><a href="index.html" title="Recharcher la carte"><span class="glyphicon glyphicon-refresh"></span></a></li>
+                    <li><a href="#" title="Sauvergarder la carte" onclick="saveMap()"><span class="glyphicon glyphicon-floppy-disk"></span></a></li>
+                    <li><a href="" id="downloadMap" title="Télécharger la carte" download="savMap.json"><span class="glyphicon glyphicon glyphicon-save"></span></a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div id="container">
+        <div id="sidebar">
+
+            <form id="area-form">
+                <div class="well well-sm">
+                    <h1>Ajouter une zone</h1>
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" class="form-control" id="name" placeholder="Petit-Bois">
+
+                        <label for="type">Type de zone</label>
+                        <select class="form-control" id="type">
+                            <option>Sauge</option>
+                            <option>Cyanure</option>
+                            <option>Ciguë</option>
+                        </select>
+                    </div>
+
+                    <h1>Affichage</h1>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label type="checkbox" value="Sauge">Sauge</label>
+                            <label type="checkbox" value="Ciguë">Ciguë</label>
+                            <label type="checkbox" value="Cyanure">Cyanure</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="mapdiv"></div>
+    </div><!-- /.container -->
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script src="test.json"></script>
+    <script src="herbarium.js"></script>
+</body>
+</html>
