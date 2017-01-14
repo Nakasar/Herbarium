@@ -2,6 +2,8 @@
  * Created by Kevin Thizy on 13/01/2017.
  */
 
+
+
 var colors = new Map();
 colors.set("Sauge", "green");
 colors.set("Cyanure", "red");
@@ -100,19 +102,6 @@ function displayObjects(objects) {
     }
 }
 
-// VARIABLES, PARSE FILE DATA
-
-var pointList = [];
-var pointListEdges = [];
-
-var mapData = JSON.parse(storedMaps)[0];
-var mapName = mapData.name;
-var mapImage = mapData.image;
-var mapSize = mapData.mapsize;
-
-var areas = [];
-var areasPolygons = [];
-
 // Map events
 function onMapLeftClick(e) {
     var x = e.latlng.lng;
@@ -183,8 +172,8 @@ function createMap() {
         minZoom: -2
     });
 
-    var bounds = [[0,0], xy(mapSize)];
-    var image = L.imageOverlay(mapImage, bounds).addTo(map);
+    bounds = [[0,0], xy(mapSize)];
+    image = L.imageOverlay(mapImage, bounds).addTo(map);
 
     map.fitBounds(bounds);
 
@@ -197,4 +186,84 @@ function createMap() {
     displayObjects(areas);
 }
 
+// MODALS
+$("#loadmap-btn").click(function() {
+    $("#loadmapModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;
+});
+
+// Map Loading
+// BROWSER CHECKS
+// Check for the various File API support.
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+    // Great success! All the File APIs are supported.
+} else {
+    alert('Navigateur ne supportant pas le chargement des fichiers.');
+}
+
+function mapLoader(e) {
+    var files = e.target.files; //FileList object
+
+    var filenames = [];
+    for(var i=0, f; f = files[i]; i++) {
+        // Check for json :
+        var fileName = f.name.split('.');
+        if(!(fileName[fileName.length - 1] == "json")) {
+            filenames.push("<span style='color: red'>" + f.name + "</span>");
+            continue;
+        }
+        else {
+            var reader = new FileReader();
+            reader.onload = (function(mapfile) {
+                return function(e) {
+                    // Parse Data
+
+                    var content = e.target.result.split("storedMaps=")[1];
+                    mapData = JSON.parse(content.substr(1, content.length - 2))[0];
+                    mapName = mapData.name;
+                    mapImage = mapData.image;
+                    mapSize = mapData.mapsize;
+
+                    areas = [];
+                    areasPolygons = [];
+
+                    // UPDATE MAP
+                    map.eachLayer(function (layer) {
+                        map.removeLayer(layer);
+                    });
+
+                    bounds = [[0,0], xy(mapSize)];
+                    image = L.imageOverlay(mapImage, bounds).addTo(map);
+
+                    map.fitBounds(bounds);
+
+                    for(i=0; i < mapData.areas.length; i++) {
+                        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type));
+                    }
+                    displayObjects(areas);
+                };
+            })(f);
+
+            reader.readAsText(f);
+        }
+    }
+    $("#filecomments").html(filenames.join(", "));
+}
+
+var image;
+var bounds;
+var pointList = [];
+var pointListEdges = [];
+
+var mapData = JSON.parse(storedMaps)[0];
+var mapName = mapData.name;
+var mapImage = mapData.image;
+var mapSize = mapData.mapsize;
+
+var areas = [];
+var areasPolygons = [];
+
 createMap();
+
+document.getElementById("mapsToLoad").addEventListener('change', mapLoader, false);

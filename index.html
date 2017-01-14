@@ -28,10 +28,36 @@
                     <li><a href="index.html" title="Recharcher la carte"><span class="glyphicon glyphicon-refresh"></span></a></li>
                     <li><a href="#" title="Sauvergarder la carte" onclick="saveMap()"><span class="glyphicon glyphicon-floppy-disk"></span></a></li>
                     <li><a href="" id="downloadMap" title="Télécharger la carte" download="savMap.json"><span class="glyphicon glyphicon glyphicon-save"></span></a></li>
+                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="loadmap-btn"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
     </nav>
+
+    <div class="modal fade" id="loadmapModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Charger une carte</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="mapsToLoad" class="input-lg">Fichiers de cartes (.json)</label>
+                            <input class="form-control input-lg" type="file" id="mapsToLoad" multiple>
+                            <!--<output id="mapslist"></output>-->
+                            <p id="filecomments" class="help-block input-lg">Veuillez choisir un ou plusieurs fichiers.</p>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Charger</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <div id="container">
         <div id="sidebar">
@@ -71,7 +97,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
 
-    <script src="test.json"></script>
+    <script src="map.json"></script>
     <script src="herbarium.js"></script>
 </body>
 </html>
