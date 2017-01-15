@@ -3,18 +3,16 @@
  */
 
 
-
-var colors = new Map();
-colors.set("Sauge", "green");
-colors.set("Cyanure", "red");
-colors.set("Ciguë", "white");
+var colorList = new Set(["blue", "red", "yellow", "gray", "orange", "pink", "lightblue", "green", "lightgreen", "black"]);
+buildColorSelector(colorList);
 
 // Classes
 class Area {
-    constructor(name, edges, type) {
+    constructor(name, edges, type, color) {
         this.name = name;
         this.edges = edges;
         this.type = type;
+        this.color = color;
         this.show = false;
     }
 
@@ -92,6 +90,7 @@ function hideObjects(objects) {
     }
 }
 function saveMap() {
+    mapData.areas = areas;
     var text = "data:text/json;charset=utf-8,storedMaps='" + encodeURIComponent(JSON.stringify(mapData)) + "'";
     $("#downloadMap").attr({
         "href": text,
@@ -104,17 +103,19 @@ function displayObjects(objects) {
         objects[i].display();
     }
 }
-function showArea(areatype) {
+function showAreas(areatype) {
     for(var i=0, area; area = areas[i]; i++) {
-        if(area.type == areatype) {
+        if(area.type == areatype && !area.show) {
             area.display();
+            $("#showbtn_" + areatype).removeClass("btn-default").addClass("btn-success");
         }
     }
 }
-function hideArea(areatype) {
+function hideAreas(areatype) {
     for(var i=0, area; area = areas[i]; i++) {
-        if(area.type == areatype) {
+        if(area.type == areatype && area.show) {
             area.hide();
+            $("#showbtn_" + areatype).removeClass("btn-success").addClass("btn-default");
         }
     }
 }
@@ -131,6 +132,56 @@ function toggleArea(areatype) {
             }
         }
     }
+}
+function buildTypeButtons(areasTypes) {
+    var html = "";
+    if(areasTypes.size == 0) {
+        html = "<p>No area on this map.</p>"
+    }
+    else {
+        for(let areatype of areasTypes) {
+            html += "<button type=\"button\" class=\"btn btn-default btn-sm\" onclick=\"toggleArea('" + areatype + "')\" id=\"showbtn_" + areatype + "\">" + areatype + "</button>\n"
+        }
+    }
+
+    $("#areaTypesButtons").html(html);
+}
+function addTypeButtonActive(areatype) {
+    if($("#areaTypesButtons").html().substr(1, 3) == "<p") {
+        var html = "";
+    }
+    else {
+        var html = $("#areaTypesButtons").html();
+    }
+
+    html += "<button type=\"button\" class=\"btn btn-success btn-sm\" onclick=\"toggleArea('" + areatype + "')\" id=\"showbtn_" + areatype + "\">" + areatype + "</button>\n"
+
+    $("#areaTypesButtons").html(html);
+}
+function addType() {
+    var typeName = $("#typeName").val();
+    var typeColor = $("#typeColor").val();
+
+    colors.set(typeName, typeColor);
+    buildTypeSelector(colors);
+}
+function buildTypeSelector(colors) {
+    var html = "";
+    if(!(colors.size == 0)) {
+        for(var [type, color] of colors.entries()) {
+            html += '<option style="color: ' + color + '">' + type + '</option>'
+        }
+    }
+    $("#type").html(html);
+}
+function buildColorSelector(colorList) {
+    var html = "";
+    if(!(colorList.size == 0)) {
+        for(let color of colorList) {
+            html += '<option style="background-color: ' + color + '; color: '+ color + ';">' + color + '</option>'
+        }
+    }
+    $("#typeColor").html(html);
 }
 
 // Map events
@@ -173,9 +224,17 @@ function onMapRightClick(e) {
         pointList.push(xy(x, y));
         pointListEdges.push(circle);
 
-        var thisArea = new Area($("#area-form #name").val(), pointList, $("#area-form #type").val());
+        var thisArea = new Area($("#area-form #name").val(), pointList, $("#area-form #type").val(), colors.get($("#area-form #type").val()));
         thisArea.display();
         mapData.areas.push(thisArea);
+        areas.push(thisArea);
+
+        if(!areasTypes.has(thisArea.type)) {
+            areasTypes.add(thisArea.type);
+            addTypeButtonActive(thisArea.type);
+        }
+
+        showAreas(thisArea.type);
 
         hideObjects(pointListEdges);
         pointList = [];
@@ -189,7 +248,7 @@ function onMapRightClick(e) {
         }).addTo(map);
 
         pointList = [xy(x, y)];
-        pointListEdges.push(circle)
+        pointListEdges = [circle];
     }
 
     return false;
@@ -210,9 +269,12 @@ function createMap() {
     map.on("contextmenu", onMapRightClick);
 
     for(i=0; i < mapData.areas.length; i++) {
-        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type));
+        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type,  mapData.areas[i].color));
+        areasTypes.add(mapData.areas[i].type);
+        colors.set(mapData.areas[i].type, mapData.areas[i].color);
     }
-    displayObjects(areas);
+
+    buildTypeButtons(areasTypes);
 }
 
 // MODALS
@@ -269,9 +331,15 @@ function mapLoader(e) {
 
                     map.fitBounds(bounds);
 
+                    areasTypes = new Set();
+                    colors = new Map();
                     for(i=0; i < mapData.areas.length; i++) {
-                        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type));
+                        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type, mapData.areas[i].color));
+                        areasTypes.add(mapData.areas[i].type)
+                        colors.set(mapData.areas[i].type, mapData.areas[i].color);
                     }
+
+                    buildTypeButtons(areasTypes);
                     //displayObjects(areas);
                 };
             })(f);
@@ -293,7 +361,11 @@ var mapImage = mapData.image;
 var mapSize = mapData.mapsize;
 
 var areas = [];
+var areasTypes = new Set();
 var areasPolygons = [];
+
+var colors = new Map();
+buildTypeSelector(colors);
 
 createMap();
 

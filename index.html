@@ -71,18 +71,33 @@
 
                         <label for="type">Type de zone</label>
                         <select class="form-control" id="type">
-                            <option>Sauge</option>
-                            <option>Cyanure</option>
-                            <option>Ciguë</option>
                         </select>
                     </div>
+                </div>
+            </form>
+            <form id="area-form">
+                <div class="well well-sm">
+                    <h1>Ajouter un type de zone</h1>
+                    <div class="form-group">
+                        <label for="typeName">Type</label>
+                        <input type="text" class="form-control" id="typeName" placeholder="Sauge">
 
+                        <label for="typeColor">Couleur</label>
+                        <select class="form-control" id="typeColor">
+                            <option style="background-color: blue; color: blue;">blue</option>
+                            <option style="background-color: red; color: red;">red</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-default" onclick="addType()">Ajouter</button>
+                </div>
+            </form>
+
+            <form id="area-form">
+                <div class="well well-sm">
                     <h1>Affichage</h1>
                     <div class="form-group">
-                        <div class="checkbox">
-                            <button type="button" class="btn btn-default btn-sm" onclick="toggleArea('Sauge')" id="showbtn_Sauge">Sauge</button>
-                            <button type="button" class="btn btn-default btn-sm" onclick="toggleArea('Ciguë')" id="showbtn_Ciguë">Ciguë</button>
-                            <button type="button" class="btn btn-default btn-sm" onclick="toggleArea('Cyanure')" id="showbtn_Cyanure">Cyanure</button>
+                        <div class="checkbox" id="areaTypesButtons">
+                            <p>No area detected.</p>
                         </div>
                     </div>
                 </div>
