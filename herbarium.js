@@ -23,6 +23,7 @@ class Area {
     display() {
         this.show = true;
         areasPolygons.push(L.polygon(this.edges, {
+            fillOpacity: 0.7,
             color: colors.get(this.type)
         }));
         this.polygonId = areasPolygons.length - 1;
@@ -147,7 +148,7 @@ function buildTypeButtons(areasTypes) {
     $("#areaTypesButtons").html(html);
 }
 function addTypeButtonActive(areatype) {
-    if($("#areaTypesButtons").html().substr(1, 3) == "<p") {
+    if($("#areaTypesButtons").html().substr(0, 2) == "<p") {
         var html = "";
     }
     else {
