@@ -15,6 +15,7 @@ class Area {
         this.name = name;
         this.edges = edges;
         this.type = type;
+        this.show = false;
     }
 
     toString() {
@@ -22,6 +23,7 @@ class Area {
     }
 
     display() {
+        this.show = true;
         areasPolygons.push(L.polygon(this.edges, {
             color: colors.get(this.type)
         }));
@@ -30,7 +32,8 @@ class Area {
     }
 
     hide() {
-        map.removeLayer(this.polygon);
+        this.show = false;
+        map.removeLayer(areasPolygons[this.polygonId]);
     }
 }
 
@@ -38,7 +41,7 @@ class Area {
 var map;
 
 // Close and Open SideBar
-var sidebarClosed = true;
+var sidebarClosed = false;
 function sidebarClose() {
     $("#sidebar").animate({
         width: "0"
@@ -101,6 +104,34 @@ function displayObjects(objects) {
         objects[i].display();
     }
 }
+function showArea(areatype) {
+    for(var i=0, area; area = areas[i]; i++) {
+        if(area.type == areatype) {
+            area.display();
+        }
+    }
+}
+function hideArea(areatype) {
+    for(var i=0, area; area = areas[i]; i++) {
+        if(area.type == areatype) {
+            area.hide();
+        }
+    }
+}
+function toggleArea(areatype) {
+    for(var i=0, area; area = areas[i]; i++) {
+        if(area.type == areatype) {
+            if(area.show) {
+                area.hide();
+                $("#showbtn_" + areatype).removeClass("btn-success").addClass("btn-default");
+            }
+            else {
+                area.display();
+                $("#showbtn_" + areatype).removeClass("btn-default").addClass("btn-success");
+            }
+        }
+    }
+}
 
 // Map events
 function onMapLeftClick(e) {
@@ -161,15 +192,13 @@ function onMapRightClick(e) {
         pointListEdges.push(circle)
     }
 
-    console.log(pointList);
-
     return false;
 }
 
 function createMap() {
     map = L.map("mapdiv", {
         crs: L.CRS.Simple,
-        minZoom: -2
+        minZoom: -1
     });
 
     bounds = [[0,0], xy(mapSize)];
@@ -220,10 +249,12 @@ function mapLoader(e) {
                     // Parse Data
 
                     var content = e.target.result.split("storedMaps=")[1];
-                    mapData = JSON.parse(content.substr(1, content.length - 2))[0];
+                    mapData = JSON.parse(content.substr(1, content.length - 2));
                     mapName = mapData.name;
                     mapImage = mapData.image;
                     mapSize = mapData.mapsize;
+
+                    filenames.push("<span style='color: green'>" + mapName + "</span>");
 
                     areas = [];
                     areasPolygons = [];
@@ -241,7 +272,7 @@ function mapLoader(e) {
                     for(i=0; i < mapData.areas.length; i++) {
                         areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type));
                     }
-                    displayObjects(areas);
+                    //displayObjects(areas);
                 };
             })(f);
 
@@ -256,7 +287,7 @@ var bounds;
 var pointList = [];
 var pointListEdges = [];
 
-var mapData = JSON.parse(storedMaps)[0];
+var mapData = JSON.parse(storedMaps);
 var mapName = mapData.name;
 var mapImage = mapData.image;
 var mapSize = mapData.mapsize;
