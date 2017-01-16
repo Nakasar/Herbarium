@@ -72,6 +72,19 @@
                         <label for="type">Type de zone</label>
                         <select class="form-control" id="type">
                         </select>
+
+                        <label class="radio-inline">
+                            <input type="radio" name="quality" id="inlineRadio1" value="rare"> Rare
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="quality" id="inlineRadio2" value="non commune"> Peu Commune
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="quality" id="inlineRadio3" value="commune"> Commune
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="quality" id="inlineRadio4" value="abondante"> Abondante
+                        </label>
                     </div>
                 </div>
             </form>
@@ -91,7 +104,6 @@
                     <button type="button" class="btn btn-default" onclick="addType()">Ajouter</button>
                 </div>
             </form>
-
             <form id="area-form">
                 <div class="well well-sm">
                     <h1>Affichage</h1>

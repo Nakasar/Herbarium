@@ -2,16 +2,25 @@
  * Created by Kevin Thizy on 13/01/2017.
  */
 
+var qualityList = new Map();
+qualityList.set("rare", 0.1);
+qualityList.set("non commune", 0.2);
+qualityList.set("commune", 0.3);
+qualityList.set("abondante", 0.5);
 
 var colorList = new Set(["blue", "red", "yellow", "gray", "orange", "pink", "lightblue", "green", "lightgreen", "black"]);
 buildColorSelector(colorList);
 
 // Classes
 class Area {
-    constructor(name, edges, type, color) {
+    constructor(name, edges, type, quality, color) {
         this.name = name;
         this.edges = edges;
         this.type = type;
+        if(!quality) {
+            quality = "commune"
+        }
+        this.quality = quality;
         this.color = color;
         this.show = false;
     }
@@ -23,9 +32,10 @@ class Area {
     display() {
         this.show = true;
         areasPolygons.push(L.polygon(this.edges, {
-            fillOpacity: 0.7,
+            fillOpacity: qualityList.get(this.quality),
+            opacity: qualityList.get(this.quality) + 0.1,
             color: colors.get(this.type)
-        }));
+        }).bindTooltip(this.quality));
         this.polygonId = areasPolygons.length - 1;
         areasPolygons[this.polygonId].addTo(map);
     }
@@ -167,7 +177,7 @@ function addType() {
     buildTypeSelector(colors);
 }
 function buildTypeSelector(colors) {
-    var html = "";
+    var html = '<option>      </option>';
     if(!(colors.size == 0)) {
         for(var [type, color] of colors.entries()) {
             html += '<option style="color: ' + color + '">' + type + '</option>'
@@ -212,6 +222,10 @@ function onMapRightClick(e) {
     var x = e.latlng.lng;
     var y = e.latlng.lat;
 
+    if($("#area-form #type").val() === "") {
+        return false;
+    }
+
     if(pointList.length > 0) {
 
 
@@ -225,7 +239,7 @@ function onMapRightClick(e) {
         pointList.push(xy(x, y));
         pointListEdges.push(circle);
 
-        var thisArea = new Area($("#area-form #name").val(), pointList, $("#area-form #type").val(), colors.get($("#area-form #type").val()));
+        var thisArea = new Area($("#area-form #name").val(), pointList, $("#area-form #type").val(), $('input[name=quality]:checked', '#area-form').val(), colors.get($("#area-form #type").val()));
         thisArea.display();
         mapData.areas.push(thisArea);
         areas.push(thisArea);
@@ -254,6 +268,9 @@ function onMapRightClick(e) {
 
     return false;
 }
+function doNothing() {
+    return false;
+}
 
 function createMap() {
     map = L.map("mapdiv", {
@@ -267,15 +284,17 @@ function createMap() {
     map.fitBounds(bounds);
 
     map.on("click", onMapLeftClick);
-    map.on("contextmenu", onMapRightClick);
+    map.on("contextmenu", onMapRightClick)
+    map.on("zoomanim", doNothing);
 
     for(i=0; i < mapData.areas.length; i++) {
-        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type,  mapData.areas[i].color));
+        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type, mapData.areas[i].quality, mapData.areas[i].color));
         areasTypes.add(mapData.areas[i].type);
         colors.set(mapData.areas[i].type, mapData.areas[i].color);
     }
 
     buildTypeButtons(areasTypes);
+    buildTypeSelector(colors);
 }
 
 // MODALS
@@ -335,12 +354,13 @@ function mapLoader(e) {
                     areasTypes = new Set();
                     colors = new Map();
                     for(i=0; i < mapData.areas.length; i++) {
-                        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type, mapData.areas[i].color));
+                        areas.push(new Area(mapData.areas[i].name, mapData.areas[i].edges, mapData.areas[i].type, mapData.areas[i].quality, mapData.areas[i].color));
                         areasTypes.add(mapData.areas[i].type)
                         colors.set(mapData.areas[i].type, mapData.areas[i].color);
                     }
 
                     buildTypeButtons(areasTypes);
+                    buildTypeSelector(colors);
                     //displayObjects(areas);
                 };
             })(f);
