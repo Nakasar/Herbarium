@@ -12,6 +12,10 @@ var colorList = new Set(["blue", "red", "yellow", "gray", "orange", "pink", "lig
 buildColorSelector(colorList);
 
 // Classes
+/**
+ * Area(name, adges, type, quality, color)
+ * Represents an area of the map.
+ */
 class Area {
     constructor(name, edges, type, quality, color) {
         this.name = name;
@@ -23,26 +27,58 @@ class Area {
         this.quality = quality;
         this.color = color;
         this.show = false;
+        this.polygonId = -1;
     }
 
+    /**
+     * Print information about the Area.
+     * @returns {string}
+     */
     toString() {
-        return this.name + " - " + this.type + " : " + this.edges;
+        return this.name + " - " + this.type + " : " + this.edges + ", with id " + this.polygonId;
     }
 
+    /**
+     * Display the area on the map
+     */
     display() {
         this.show = true;
-        areasPolygons.push(L.polygon(this.edges, {
-            fillOpacity: qualityList.get(this.quality),
-            opacity: qualityList.get(this.quality) + 0.1,
-            color: colors.get(this.type)
-        }).bindTooltip(this.quality));
-        this.polygonId = areasPolygons.length - 1;
+        if(this.polygonId == -1) {
+            // Create a new polygon
+            this.polygonId = areasPolygons.length ;
+            areasPolygons.push(L.polygon(this.edges, {
+                fillOpacity: qualityList.get(this.quality),
+                opacity: qualityList.get(this.quality) + 0.1,
+                color: colors.get(this.type)
+            }).bindTooltip(this.quality + " : " + this.polygonId).on("contextmenu", this.delete)); //TODO : Delete area
+        }
+        // Then, display the polygon
         areasPolygons[this.polygonId].addTo(map);
     }
 
+    /**
+     * Hide the area from the map
+     */
     hide() {
         this.show = false;
         map.removeLayer(areasPolygons[this.polygonId]);
+    }
+
+    /**
+     * TODO : Delete Area
+     */
+    delete(e) {
+        if(statusToolDelete) {
+            var id = areasPolygons.indexOf(e.target);
+            for (let a of areas) {
+                if (a.polygonId == id) {
+                    var area = a
+                }
+            }
+            area.hide();
+            areas.splice(areas.indexOf(area), 1);
+            mapData.areas.splice(mapData.areas.indexOf(area), 1);
+        }
     }
 }
 
@@ -215,14 +251,13 @@ function onMapLeftClick(e) {
 
     }
 
-
     return false;
 }
 function onMapRightClick(e) {
     var x = e.latlng.lng;
     var y = e.latlng.lat;
 
-    if($("#area-form #type").val() === "") {
+    if($("#area-form #type").val() === "" || statusToolDelete) {
         return false;
     }
 
@@ -266,6 +301,24 @@ function onMapRightClick(e) {
         pointListEdges = [circle];
     }
 
+    return false;
+}
+var statusToolDelete = false;
+function toggleToolDelete() {
+    if(statusToolDelete) {
+        // Deactivate delete tool
+        $("#btnTool_delete").removeClass("btn-danger").addClass("btn-default");
+        statusToolDelete = false;
+
+        // TODO: Deactivate delete tool
+    }
+    else {
+        // Activate delete tool
+        $("#btnTool_delete").removeClass("btn-default").addClass("btn-danger");
+        statusToolDelete = true;
+
+        // TODO: Activate delete tool
+    }
     return false;
 }
 function doNothing() {
