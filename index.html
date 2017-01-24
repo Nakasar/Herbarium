@@ -62,7 +62,7 @@
     <div id="container">
         <div id="sidebar">
 
-            <form id="area-form">
+            <form id="toolSelector-form">
                 <div class="well well-sm">
                     <h1>Outils</h1>
                     <div class="form-group">
@@ -70,49 +70,68 @@
                     </div>
                 </div>
             </form>
-            <form id="area-form">
-                <div class="well well-sm">
-                    <h1>Ajouter une zone</h1>
-                    <div class="form-group">
-                        <label for="name">Nom</label>
-                        <input type="text" class="form-control" id="name" placeholder="Petit-Bois">
 
-                        <label for="type">Type de zone</label>
-                        <select class="form-control" id="type">
-                        </select>
+            <div class="panel panel-default">
+                <div style="cursor: pointer" data-toggle="collapse" data-target="#addZone" class="panel-heading" role="tab" id="addZoneHeader">
+                    <h4 class="panel-title">Ajouter une Zone</h4>
+                </div>
+                <div id="addZone" class="panel-collape collapse" role="tabpanel" aria-labelledby="addZoneTypeHeader">
+                    <div class="panel-body">
+                        <form id="area-form">
+                            <div class="well well-sm">
+                                <div class="form-group">
+                                    <label for="name">Nom</label>
+                                    <input type="text" class="form-control" id="name" placeholder="Petit-Bois">
 
-                        <label class="radio-inline">
-                            <input type="radio" name="quality" id="inlineRadio1" value="rare"> Rare
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="quality" id="inlineRadio2" value="non commune"> Peu Commune
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="quality" id="inlineRadio3" value="commune"> Commune
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="quality" id="inlineRadio4" value="abondante"> Abondante
-                        </label>
+                                    <label for="type">Type de zone</label>
+                                    <select class="form-control" id="type">
+                                    </select>
+
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quality" id="inlineRadio1" value="rare"> Rare
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quality" id="inlineRadio2" value="non commune"> Peu Commune
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quality" id="inlineRadio3" value="commune"> Commune
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quality" id="inlineRadio4" value="abondante"> Abondante
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </form>
-            <form id="area-form">
-                <div class="well well-sm">
-                    <h1>Ajouter un type de zone</h1>
-                    <div class="form-group">
-                        <label for="typeName">Type</label>
-                        <input type="text" class="form-control" id="typeName" placeholder="Sauge">
+            </div>
 
-                        <label for="typeColor">Couleur</label>
-                        <select class="form-control" id="typeColor">
-                            <option style="background-color: blue; color: blue;">blue</option>
-                            <option style="background-color: red; color: red;">red</option>
-                        </select>
-                    </div>
-                    <button type="button" class="btn btn-default" onclick="addType()">Ajouter</button>
+            <div class="panel panel-default">
+                <div style="cursor: pointer" data-toggle="collapse" data-target="#addZoneType" class="panel-heading" role="tab" id="addZoneTypeHeader">
+                    <h4 class="panel-title">Ajouter un Type de Zone</h4>
                 </div>
-            </form>
-            <form id="area-form">
+                <div id="addZoneType" class="panel-collape collapse" role="tabpanel" aria-labelledby="addZoneTypeHeader">
+                    <div class="panel-body">
+                        <form id="addArea-form">
+                            <div class="well well-sm">
+                                <div class="form-group">
+                                    <label for="typeName">Type</label>
+                                    <input type="text" class="form-control" id="typeName" placeholder="Sauge">
+
+                                    <label for="typeColor">Couleur</label>
+                                    <select class="form-control" id="typeColor">
+                                        <option style="background-color: blue; color: blue;">blue</option>
+                                        <option style="background-color: red; color: red;">red</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-default" onclick="addType()">Ajouter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <form id="zoneSelector-form">
                 <div class="well well-sm">
                     <h1>Affichage</h1>
                     <div class="form-group">
