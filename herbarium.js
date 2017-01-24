@@ -18,7 +18,7 @@ buildColorSelector(colorList);
  */
 class Area {
     constructor(name, edges, type, quality, color) {
-        this.name = name;
+        this.name = name
         this.edges = edges;
         this.type = type;
         if(!quality) {
@@ -38,6 +38,15 @@ class Area {
         return this.name + " - " + this.type + " : " + this.edges + ", with id " + this.polygonId;
     }
 
+    tooltipText() {
+        if(this.name == "") {
+            return "<em>" + this.quality + "</em>"
+        }
+        else {
+            return "<strong>" + this.name + "</strong><br/><em>" + this.quality + "</em>"
+        }
+    }
+
     /**
      * Display the area on the map
      */
@@ -50,7 +59,7 @@ class Area {
                 fillOpacity: qualityList.get(this.quality),
                 opacity: qualityList.get(this.quality) + 0.1,
                 color: colors.get(this.type)
-            }).bindTooltip(this.quality + " : " + this.polygonId).on("contextmenu", this.delete)); //TODO : Delete area
+            }).bindTooltip(this.tooltipText()).on("contextmenu", this.delete)); //TODO : Delete area
         }
         // Then, display the polygon
         areasPolygons[this.polygonId].addTo(map);
