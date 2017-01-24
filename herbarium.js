@@ -40,10 +40,10 @@ class Area {
 
     tooltipText() {
         if(this.name == "") {
-            return "<em>" + this.quality + "</em>"
+            return this.type + "<br/><em>" + this.quality + "</em>"
         }
         else {
-            return "<strong>" + this.name + "</strong><br/><em>" + this.quality + "</em>"
+            return "<strong>" + this.name + "</strong><br/>" + this.type + "<br/><em>" + this.quality + "</em>"
         }
     }
 
