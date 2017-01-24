@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -24,15 +24,104 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="#" title="Sauvergarder la carte" onclick="sidebarSwitch()"><span id="sidebarswitch" class="glyphicon glyphicon-menu-left"></span></a></li>
-                    <li><a href="index.html" title="Recharcher la carte"><span class="glyphicon glyphicon-refresh"></span></a></li>
+                    <li><a href="#" title="Afficher/Cacher le volet" onclick="sidebarSwitch()"><span id="sidebarswitch" class="glyphicon glyphicon-menu-left"></span></a></li>
+                    <li><a href="#" title="Aide" id="help-btn" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+                    <li><a href="#" title="A Propos" id="about-btn" data-toggle="collapse" data-target=".navbar-collapse.in"><span class="glyphicon glyphicon-info-sign"></span></a></li>
+                    <li><a href="index.html" title="Recharger l'application"><span class="glyphicon glyphicon-refresh"></span></a></li>
                     <li><a href="#" title="Sauvergarder la carte" onclick="saveMap()"><span class="glyphicon glyphicon-floppy-disk"></span></a></li>
                     <li><a href="" id="downloadMap" title="Télécharger la carte" download="savMap.json"><span class="glyphicon glyphicon glyphicon-save"></span></a></li>
-                    <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="loadmap-btn"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
+                    <li><a href="#" title="Charger une carte" data-toggle="collapse" data-target=".navbar-collapse.in" id="loadmap-btn"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
     </nav>
+
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Aide</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Application</h4>
+                            <p class="list-group-item-text">
+                                Vous pouvez charger une carte de votre ordinateur à l'aide du bouton de chargement <span class="glyphicon glyphicon-cloud-upload"></span>.
+                                <br/>
+                                Pour sauvergarder la carte actuelle, utilisez le bouton de sauvegarde <span class="glyphicon glyphicon-floppy-disk"></span>. Le format d'enregistrement est un fichier texte (.json).
+                            </p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Créer un type de zone</h4>
+                            <p class="list-group-item-text">
+                                Vous pouvez créer un nouveau type de zone en ouvrant l'onglet "Ajouter un Type de Zone", disponible dans le volet de contrôle <span class="glyphicon glyphicon-menu-right"></span>.
+                                <br/>
+                                Indiquez le nom de la zone souhaitée, et selectionner une couleur parmi celles disponibles.
+                                <br/>
+                                Cliquez enfin sur "Ajouter" pour valider. Votre type de zone s'affiche désormais dans la liste des types disponibles dans l'ajout de zones.
+                            </p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Ajouter une zone</h4>
+                            <p class="list-group-item-text">
+                                Pour ajouter une zone, développez l'onglet "Ajouter une Zone" dans le volet de contrôle <span class="glyphicon glyphicon-menu-right"></span>.
+                                <br/>
+                                Vous pouvez donner un nom <em>facultatif</em> à votre zone. Choisissez le type parmis ceux disponibles sur la carte. Si votre type n'apparaît, voyez "Ajouter un Type de Zone". Déterminez la rareté de la zone en cochant la case correspondante.
+                                <br/>
+                                Effectuez un <strong>clic droit</strong> sur la carte pour poser le premier point de la frontière, puis placez les autres points dans l'ordre avec <strong>clic gauche</strong>.
+                                <br/>
+                                Validez la zone en plaçant le dernier point à l'aide d'un <strong>clic droit</strong>.
+                            </p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Supprimer une zone</h4>
+                            <p class="list-group-item-text">
+                                Pour supprimer une zone, activez <strong>l'outil de suppression</strong> en cliquant sur le boutton correspondant dans le volet de contrôle <span class="glyphicon glyphicon-menu-right"></span>.
+                                <br/>
+                                Cliquez droit sur les zones à supprimer. Désactivez l'outil de suppression une fois les modifications terminées.
+                            </p>
+                        </li>
+                    </ul>
+                    <div class="alert alert-warning" role="alert">N'oubliez pas de sauvegardez votre carte une fois vos modifications terminées !</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">A propos</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Création</h4>
+                            <p class="list-group-item-text">
+                                Implémenté en javascript par Kevin <em>Nakasar</em> Thizy, élève ingénieur Mines Nancy. Utilise Bootstrap et Leaflet.js.
+                            </p>
+                        </li>
+                        <li class="list-group-item">
+                            <h4 class="list-group-item-heading">Crédits</h4>
+                            <p class="list-group-item-text">
+                                Les cartes sont la propriétés de leurs auteurs (Anima : Beyond Fantasy).
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <div class="modal fade" id="loadmapModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
@@ -46,7 +135,6 @@
                         <div class="form-group">
                             <label for="mapsToLoad" class="input-lg">Fichiers de cartes (.json)</label>
                             <input class="form-control input-lg" type="file" id="mapsToLoad" multiple>
-                            <!--<output id="mapslist"></output>-->
                             <p id="filecomments" class="help-block input-lg">Veuillez choisir un ou plusieurs fichiers.</p>
                         </div>
                         <button type="button" class="btn btn-success btn-lg btn-block" data-dismiss="modal">Charger</button>

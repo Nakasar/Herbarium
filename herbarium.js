@@ -360,6 +360,16 @@ function createMap() {
 }
 
 // MODALS
+$("#about-btn").click(function() {
+    $("#aboutModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;
+});
+$("#help-btn").click(function() {
+    $("#helpModal").modal("show");
+    $(".navbar-collapse.in").collapse("hide");
+    return false;
+});
 $("#loadmap-btn").click(function() {
     $("#loadmapModal").modal("show");
     $(".navbar-collapse.in").collapse("hide");
