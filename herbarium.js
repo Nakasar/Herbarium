@@ -240,7 +240,24 @@ function buildColorSelector(colorList) {
     $("#typeColor").html(html);
 }
 
+// Mathematic functions
+function pointIsInPolygon(point, edges) {
+    var x = point.lng;
+    var y = point.lat;
+    var isInside = false;
+    for(var i = 0, j = edges.length - 1; i < edges.length; j = i++) {
+        var xi = edges[i].lng, yi = edges[i].lat;
+        var xj = edges[j].lng, yj = edges[j].lat;
+
+        if(((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+           isInside = !isInside;
+        }
+    }
+    return isInside;
+}
+
 // Map events
+var locationMarker;
 function onMapLeftClick(e) {
     var x = e.latlng.lng;
     var y = e.latlng.lat;
@@ -257,6 +274,40 @@ function onMapLeftClick(e) {
         pointListEdges.push(circle)
     }
     else {
+        if(locationMarker) {
+            locationMarker.setLatLng(xy(x,y));
+            var areasAtMarker = [];
+            var popupContent = "<ul>";
+            for(let area of areas) {
+                if(pointIsInPolygon(xy(x,y), area.edges)) {
+                    areasAtMarker.push(area);
+                    popupContent += "<li><strong>" + area.type + "</strong> (<em>" + area.quality + "</em>)</li>";
+                }
+            }
+            popupContent += "</ul>";
+            if(areasAtMarker.length == 0) {
+                popupContent = "<strong>Aucune plante</strong>"
+            }
+            locationMarker.setPopupContent(popupContent).openPopup();
+        }
+        else {
+            locationMarker = L.marker(xy(x,y), {
+                color: "red"
+            }).addTo(map).bindPopup(" ").openPopup();
+            var areasAtMarker = [];
+            var popupContent = "<ul>";
+            for(let area of areas) {
+                if(pointIsInPolygon(xy(x,y), area.edges)) {
+                    areasAtMarker.push(area);
+                    popupContent += "<li><strong>" + area.type + "</strong> (<em>" + area.quality + "</em>)</li>";
+                }
+            }
+            popupContent += "</ul>";
+            if(areasAtMarker.length == 0) {
+                popupContent = "<strong>Aucune plante</strong>"
+            }
+            locationMarker.setPopupContent(popupContent).openPopup();
+        }
 
     }
 
@@ -355,6 +406,7 @@ function createMap() {
         colors.set(mapData.areas[i].type, mapData.areas[i].color);
     }
 
+    locationMarker;
     buildTypeButtons(areasTypes);
     buildTypeSelector(colors);
 }
@@ -401,7 +453,7 @@ function mapLoader(e) {
             reader.onload = (function(mapfile) {
                 return function(e) {
                     // Parse Data
-
+                    locationMarker;
                     var content = e.target.result.split("storedMaps=")[1];
                     mapData = JSON.parse(content.substr(1, content.length - 2));
                     mapName = mapData.name;
